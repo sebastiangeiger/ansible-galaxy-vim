@@ -6,3 +6,6 @@ rules:
   line-length:
     max: 140
     level: error
+
+ignore: |
+  .github/workflows/main.yml
