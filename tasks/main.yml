@@ -1,2 +1,8 @@
 ---
-# tasks file for ansible-galaxy-vim
+- name: Copy something
+  copy:
+    content: "Hello ansible!"
+    dest: "/var/hello_world"
+    owner: root
+    group: root
+    mode: 0600

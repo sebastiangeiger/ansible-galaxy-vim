@@ -1,10 +1,13 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
   gather_facts: false
   tasks:
-  - name: Example assertion
+  - name: Output of hello world
+    command: "cat /var/hello_world"
+    register: hello_world
+    changed_when: false
+
+  - name: Ensure we get the right output
     assert:
-      that: true
+      that: hello_world.stdout == "Hello ansible!"
