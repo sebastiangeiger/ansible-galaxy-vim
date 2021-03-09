@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ansible-galaxy-vim"
+      include_role:
+        name: "ansible-galaxy-vim"
