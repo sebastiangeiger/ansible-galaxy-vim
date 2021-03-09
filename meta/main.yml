@@ -1,8 +1,9 @@
+---
 galaxy_info:
   author: sebastiangeiger
   role_name: vim
   description: My Vim configuration
-  license: license (GPL-2.0-or-later, MIT, etc)
+  license: license (BSD, MIT)
   min_ansible_version: 2.1
   platforms:
     - name: Ubuntu
