@@ -1,8 +1,11 @@
 ---
-- name: Copy something
-  copy:
-    content: "Hello ansible!"
-    dest: "/var/hello_world"
-    owner: root
-    group: root
-    mode: 0600
+- name: Update apt cache
+  apt:
+    update_cache: true
+    cache_valid_time: 3600  # 1 hour
+
+- name: Install vim
+  apt:
+    pkg:
+      - vim
+    state: present
