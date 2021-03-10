@@ -26,3 +26,13 @@
       assert:
         that: expectd_vimrc_permissions in vimrc.stdout
         fail_msg: 'Expected {{ vimrc.stdout }} to contain {{ expectd_vimrc_permissions }}'
+
+    - name: Get a random plugin file
+      stat:
+        path: "/root/.vim/plugged/nerdtree/README.markdown"
+      register: nerdtree_readme
+      changed_when: false
+
+    - name: Ensure the random plugin file exists (which means installing plugins worked)
+      assert:
+        that: nerdtree_readme.stat.exists

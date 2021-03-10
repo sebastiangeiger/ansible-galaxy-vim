@@ -22,3 +22,24 @@
     owner: '{{ vim_user }}'
     group: '{{ vim_user }}'
     mode: 0644
+
+- name: Make the autoload directory
+  file:
+    path: /{{ vim_user }}/.vim/autoload
+    state: directory
+    owner: '{{ vim_user }}'
+    group: '{{ vim_user }}'
+    mode: 0644
+
+- name: Write plug.vim
+  copy:
+    src: files/vim/autoload/plug.vim
+    dest: /{{ vim_user }}/.vim/autoload/plug.vim
+    backup: true
+    owner: '{{ vim_user }}'
+    group: '{{ vim_user }}'
+    mode: 0644
+
+- name: Install vim plugins
+  shell: 'vim -E -s -c "source /{{ vim_user }}/.vimrc" +PlugInstall +qall -V'  # noqa command-instead-of-shell no-changed-when
+  changed_when: false  # This is necessary to make molecule happy - should figure out a way to only run when necessary
