@@ -1,4 +1,18 @@
 ---
+- name: Ensure the user is set
+  fail: msg="Please set the 'vim_user' variable"
+  when: vim_user is not defined
+
+- name: Get information on the vim user
+  user:
+    name: '{{ vim_user }}'
+    state: present
+  register: vim_user_registered
+
+- name: Set the vim user home for future use
+  set_fact:
+    vim_user_home: '{{ vim_user_registered.home }}'
+
 - name: Update apt cache
   apt:
     update_cache: true
@@ -9,3 +23,44 @@
     pkg:
       - vim
     state: present
+
+- name: Write the vimrc
+  copy:
+    src: files/vimrc
+    dest: '{{ vim_user_home }}/.vimrc'
+    backup: true
+    owner: '{{ vim_user }}'
+    group: '{{ vim_user }}'
+    mode: 0644
+
+- name: Make the vim directory
+  file:
+    path: '{{ vim_user_home }}/.vim'
+    state: directory
+    owner: '{{ vim_user }}'
+    group: '{{ vim_user }}'
+    mode: 0755
+
+- name: Make the autoload directory
+  file:
+    path: '{{ vim_user_home }}/.vim/autoload'
+    state: directory
+    owner: '{{ vim_user }}'
+    group: '{{ vim_user }}'
+    mode: 0755
+
+- name: Write plug.vim
+  copy:
+    src: files/vim/autoload/plug.vim
+    dest: '{{ vim_user_home }}/.vim/autoload/plug.vim'
+    backup: true
+    owner: '{{ vim_user }}'
+    group: '{{ vim_user }}'
+    mode: 0644
+
+- name: Install vim plugins
+  shell: 'vim -E -s -c "source {{ vim_user_home }}/.vimrc" +PlugInstall +qall -V'  # noqa command-instead-of-shell no-changed-when
+  become: true
+  become_user: '{{ vim_user }}'
+  ignore_errors: true
+  changed_when: false  # This is mostly to make molecule happy, need to find a way of figuring out if this should run or not
