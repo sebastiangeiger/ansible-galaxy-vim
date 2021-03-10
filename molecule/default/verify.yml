@@ -2,12 +2,16 @@
 - name: Verify
   hosts: all
   gather_facts: false
-  tasks:
-  - name: Output of hello world
-    command: "cat /var/hello_world"
-    register: hello_world
-    changed_when: false
+  vars:
+    expected_vim_version: "VIM - Vi IMproved 8.0"
 
-  - name: Ensure we get the right output
-    assert:
-      that: hello_world.stdout == "Hello ansible!"
+  tasks:
+    - name: Check output of vim --version
+      command: "vim --version"
+      register: vim_version
+      changed_when: false
+
+    - name: The right vim version was installed
+      assert:
+        that: expected_vim_version in (vim_version.stdout_lines | first)
+        fail_msg: 'Expected {{ vim_version.stdout_lines | first }} to contain {{ expected_vim_version }}'
