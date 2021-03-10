@@ -13,3 +13,12 @@
     pkg:
       - vim
     state: present
+
+- name: Write the vimrc
+  copy:
+    src: files/vimrc
+    dest: /{{ vim_user }}/.vimrc
+    backup: true
+    owner: '{{ vim_user }}'
+    group: '{{ vim_user }}'
+    mode: 0644

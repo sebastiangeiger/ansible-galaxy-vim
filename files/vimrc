@@ -1,0 +1,195 @@
+" vim:fdm=marker
+
+"0. Plugins {{{1
+"}}} <Setup plugin system> {{{2
+set nocompatible              " be iMproved, required
+filetype off                  " required
+call plug#begin('~/.vim/plugged')
+
+"}}} 7. Navigating files {{{2
+
+Plug 'mileszs/ack.vim'
+Plug 'kien/ctrlp.vim'
+Plug 'scrooloose/nerdtree'
+
+"}}} 8. Editing files {{{2
+Plug 'vim-scripts/tComment'
+Plug 'godlygeek/tabular'
+Plug 'bkad/CamelCaseMotion'
+Plug 'airblade/vim-gitgutter'
+
+"}}} 9. Appearance {{{2
+Plug 'tpope/vim-vividchalk'
+Plug 'bling/vim-airline'
+
+"}}} 10. Running Tests {{{2
+Plug 'benmills/vimux'
+
+"}}} 13. Ruby & Rails {{{2
+Plug 'tpope/vim-rails'
+Plug 'vim-ruby/vim-ruby'
+" Convert do .. end into { .. }
+Plug 'jgdavey/vim-blockle'
+
+""}}} 14. Elixir {{{2
+Plug 'elixir-lang/vim-elixir'
+
+"}}} 15. Integration with external apps {{{2
+Plug 'ruanyl/vim-gh-line'
+
+"}}} </Setup plugin system> {{{2
+call plug#end()
+"}}}
+
+"1. General configuration {{{1
+let mapleader = ','               " Set leader to ,
+syntax on                         " Switch syntax highlighting on
+set number                        " Show line numbers.
+set ruler                         " Show cursor position.
+set showcmd                       " Display incomplete commands.
+set showmode                      " Display the mode you're in.
+
+set visualbell                    " No beeping.
+
+set hidden                        " Buffers stay loaded when abandoned
+set autoread                      " Automatically read (externally) changed files
+
+set backspace=indent,eol,start    " Intuitive backspacing
+
+set nowrap                        " Don't wrap long lines
+"}}} 2. Backup files {{{1
+set nobackup                      " Don't make a backup before overwriting a file.
+set nowritebackup                 " And again.
+set noswapfile                    " Don't need swapfiles
+
+"}}} 3. Searching {{{1
+set ignorecase                    " Case-insensitive searching.
+set smartcase                     " But case-sensitive if expression contains a capital letter.
+set incsearch                     " Highlight matches as you type.
+set hlsearch                      " Highlight matches.
+
+"}}} 4. Tabs & Spaces {{{1
+set expandtab                     " Insert spaces when hitting <tab>
+set autoindent                    " Keep indentation level of previous line
+set smartindent                   " Indentation based on syntax
+
+filetype indent on                " Load the indentation for the current file type
+
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+
+"}}} 5. Key mappings {{{1
+" Use `jk` instead of `esc`
+inoremap jk <Esc>
+inoremap Jk <Esc>
+inoremap JK <Esc>
+inoremap jK <Esc>
+inoremap <Esc> <nop>
+
+" Arrow keys are bad form
+inoremap <Up> <nop>
+inoremap <Down> <nop>
+inoremap <Left> <nop>
+inoremap <Right> <nop>
+
+" No more accidental help windows
+nmap <F1> :echo<CR>
+imap <F1> <C-o>:echo<CR>
+
+"}}} 6. Navigating buffers {{{1
+nnoremap <C-h> :bprevious<CR>
+nnoremap <C-l> :bnext<CR>
+nnoremap <C-j> :CtrlPBuffer<CR>
+
+"Close buffer
+nnoremap <C-x> :w<CR>:bp\|bd #<CR>
+nnoremap <leader>x :w<CR>:bp\|bd #<CR>
+
+"}}} 7. Navigating files {{{1
+" Go through ack matches
+nnoremap <C-n> :cnext<CR>
+nnoremap <C-p> :cprevious<CR>
+nnoremap <leader>a :AckFromSearch<CR>
+
+" Ctrl+P
+map <leader>t :CtrlP<CR>
+map <leader>T :CtrlPClearAllCaches<CR>:CtrlP<CR>
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/vcr_cassettes/*/*.yml,*/node_modules/*
+
+" NerdTree
+nnoremap <Tab> :NERDTreeToggle<CR>
+nnoremap <leader>f :NERDTreeFind<CR>
+
+"}}} 8. Editing files {{{1
+
+" Opposite of Shift-J
+nnoremap <S-K> a<CR><Esc>k$
+
+"Remove trailing whitespaces
+autocmd BufWritePre * :%s/\s\+$//e
+
+" Toggle Comment
+map <leader>/ <c-_><c-_>
+
+" Git gutter
+nmap ]h <Plug>GitGutterNextHunk
+nmap [h <Plug>GitGutterPrevHunk
+
+"}}} 9. Appearance {{{1
+colorscheme vividchalk
+
+" Highlight lines longer than 79
+autocmd BufNewFile,BufRead * match ErrorMsg '\%>99v.\+'
+
+" Airline
+let g:airline#extensions#tabline#enabled = 1
+set laststatus=2
+
+"}}} 10. Running Tests {{{1
+noremap <SPACE> :w<CR>:VimuxRunLastCommand<CR>
+imap <leader><leader> jk:w<CR>:VimuxRunLastCommand<CR>
+map <leader>c :VimuxInterruptRunner<CR>
+map <leader>i :VimuxInspectRunner<CR>
+let g:VimuxOrientation = "h"
+let g:VimuxHeight = "36"
+
+"}}} 11. Vimrc files {{{1
+map <leader>- :edit ~/.vimrc<CR>
+map <silent> <leader>_ :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
+
+"}}} 12. git files {{{1
+"Break line at 72 characters in commit messages
+autocmd filetype gitcommit set textwidth=72
+autocmd filetype gitcommit setlocal spell
+
+"}}} 13. Ruby & Rails {{{1
+
+au BufEnter *.rb map <Leader>ra :call VimuxRunCommand("bundle exec rspec " . bufname("%"))<CR>
+au BufEnter *.rb map <Leader>rf :call VimuxRunCommand("bundle exec rspec " . bufname("%") . ":" . line("."))<CR>
+au BufEnter *.rb map <Leader>rcf :call VimuxRunCommand("clear; bundle exec rspec " . bufname("%") . ":" . line("."))<CR>
+au BufEnter *.rb map <Leader>rr :call VimuxRunCommand("bundle exec rspec")<CR>
+au BufEnter *.feature map <Leader>ra :call VimuxRunCommand("bundle exec cucumber " . bufname("%"))<CR>
+au BufEnter *.feature map <Leader>rf :call VimuxRunCommand("bundle exec cucumber " . bufname("%") . " -l " . line("."))<CR>
+au BufEnter *.feature map <Leader>rcf :call VimuxRunCommand("clear; bundle exec cucumber " . bufname("%") . " -l " . line("."))<CR>
+
+"}}} 14. Elixir {{{1
+au BufEnter *_test.exs map <Leader>ra :call VimuxRunCommand("mix test " .  bufname("%"))<CR>
+au BufEnter *_test.exs map <Leader>rf :call VimuxRunCommand("mix test " .  bufname("%") . ":" . line("."))<CR>
+au BufEnter *_test.exs map <Leader>rcf :call VimuxRunCommand("clear; mix test . bufname("%") . ":" . line("."))<CR>
+au BufEnter *_test.exs map <Leader>rr :call VimuxRunCommand("mix test")<CR>
+au BufEnter *.ex map <Leader>rr :call VimuxRunCommand("mix test")<CR>
+
+"}}} 17. Spellchecking/Correction {{{1
+highlight clear SpellBad
+highlight SpellBad cterm=underline
+highlight clear SpellCap
+highlight SpellCap cterm=underline
+highlight clear SpellRare
+highlight SpellRare cterm=underline
+highlight clear SpellLocal
+highlight SpellLocal cterm=underline
+
+iab teh the
+iab destory destroy
+"}}}

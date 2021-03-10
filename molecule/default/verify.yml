@@ -4,6 +4,7 @@
   gather_facts: false
   vars:
     expected_vim_version: "VIM - Vi IMproved 8.0"
+    expectd_vimrc_permissions: "-rw-r--r-- 1 root root"
 
   tasks:
     - name: Check output of vim --version
@@ -15,3 +16,13 @@
       assert:
         that: expected_vim_version in (vim_version.stdout_lines | first)
         fail_msg: 'Expected {{ vim_version.stdout_lines | first }} to contain {{ expected_vim_version }}'
+
+    - name: Stat the vimrc
+      command: "ls -la /root/.vimrc"
+      register: vimrc
+      changed_when: false
+
+    - name: Ensure the .vimrc exists
+      assert:
+        that: expectd_vimrc_permissions in vimrc.stdout
+        fail_msg: 'Expected {{ vimrc.stdout }} to contain {{ expectd_vimrc_permissions }}'
