@@ -1,0 +1,9 @@
+---
+# Ansible playbook for ansible-semaphore
+
+- hosts: ubuntu
+  vars:
+    vim_user: vagrant
+
+  roles:
+    - role: '../..'
