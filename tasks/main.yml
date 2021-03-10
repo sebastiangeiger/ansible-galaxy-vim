@@ -1,4 +1,8 @@
 ---
+- name: Ensure the user is set
+  fail: msg="Please set the 'vim_user' variable"
+  when: vim_user is not defined
+
 - name: Update apt cache
   apt:
     update_cache: true
