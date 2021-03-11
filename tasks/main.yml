@@ -14,17 +14,20 @@
     vim_user_home: '{{ vim_user_registered.home }}'
 
 - name: Update apt cache
+  become: true
   apt:
     update_cache: true
     cache_valid_time: 3600  # 1 hour
 
 - name: Install vim
+  become: true
   apt:
     pkg:
       - vim
     state: present
 
 - name: Write the vimrc
+  become: true
   copy:
     src: files/vimrc
     dest: '{{ vim_user_home }}/.vimrc'
@@ -34,6 +37,7 @@
     mode: 0644
 
 - name: Make the vim directory
+  become: true
   file:
     path: '{{ vim_user_home }}/.vim'
     state: directory
@@ -42,6 +46,7 @@
     mode: 0755
 
 - name: Make the autoload directory
+  become: true
   file:
     path: '{{ vim_user_home }}/.vim/autoload'
     state: directory
@@ -50,6 +55,7 @@
     mode: 0755
 
 - name: Write plug.vim
+  become: true
   copy:
     src: files/vim/autoload/plug.vim
     dest: '{{ vim_user_home }}/.vim/autoload/plug.vim'
