@@ -1,9 +1,18 @@
 ---
-# Ansible playbook for ansible-semaphore
+# Ansible playbook for manually testing the role
 
 - hosts: ubuntu
   vars:
-    vim_user: vagrant
+    vim_user: testing
+
+  pre_tasks:
+    - user:
+        name: testing
+        # password is 'testing'
+        password: $1$laskdj$kgPmmR.IrbTEZQZPv7co3.
+        state: present
+    - apt: update_cache=true cache_valid_time=3600
+    - apt: pkg=acl state=present
 
   roles:
     - role: '../..'

@@ -10,4 +10,6 @@ My vim configuration as a publishable ansible role
 
 `vagrant up && vagrant ssh`
 
-1. `vim` then type `,t` to ensure fuzzy search comes up
+1. `su testing`
+2. Password is 'testing'
+3. `vim` then type `,t` to ensure fuzzy search comes up
